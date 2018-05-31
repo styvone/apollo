@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<svg width="960" height="600"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+var nodes = [
+  {name: 'Post Malone'},
+  {name: 'Rich Brian'},
+  {name: 'BROCKHAMPTON'},
+  {name: 'Joji'},
+  {name: 'Kendrick Lamar'},
+]
+
+var width = window.innerWidth
+var height = window.innerHeight
+var svg = d3.select('svg')
+	.attr('width', width).attr('height', height)
+
+var simulation = d3
+  .forceSimulation()
+  .force('charge', d3.forceManyBody().strength(-120))
+  .force('center', d3.forceCenter(width / 2, height / 2))
+
+var nodeElements = svg.append("g")
+  .attr("class", "nodes")
+  .selectAll("circle")
+  .data(nodes)
+  .enter().append("circle")
+  .attr("r", 10)
+  .attr("fill", "#ff8491")
+
+var textElements = svg.append("g")
+  .attr("class", "texts")
+  .selectAll("text")
+  .data(nodes)
+  .enter().append("text")
+  .text(function (node) {return node.name})
+  .attr("font-size", 14)
+  .attr("font-family", 'arial')
+  .attr("dx", 15)
+  .attr("dy", 4)
+
+  simulation.nodes(nodes).on('tick', () => {
+    nodeElements
+      .attr('cx', function (node) {return node.x})
+      .attr('cy', function (node) {return node.y})
+    textElements
+      .attr('x', function (node) {return node.x})
+      .attr('y', function (node) {return node.y})
+  })
+
+</script>
