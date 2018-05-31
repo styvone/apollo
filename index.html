@@ -4,11 +4,19 @@
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 var nodes = [
-  {name: 'Post Malone'},
-  {name: 'Rich Brian'},
-  {name: 'BROCKHAMPTON'},
-  {name: 'Joji'},
-  {name: 'Kendrick Lamar'},
+  {id: 'Post Malone'},
+  {id: 'Rich Brian'},
+  {id: 'BROCKHAMPTON'},
+  {id: 'Joji'},
+  {id: 'Kendrick Lamar'},
+]
+
+var links = [
+	{target: "Post Malone", source: "Rich Brian", strength: 0.2},
+	{target: "Rich Brian", source: "BROCKHAMPTON", strength: 0.01},
+	{target: "BROCKHAMPTON", source: "Joji", strength: 0.01},
+	{target: "Joji", source: "Kendrick Lamar", strength: 0.07},
+	{target: "Kendrick Lamar", source: "Post Malone", strength: 0.07}
 ]
 
 var width = window.innerWidth
@@ -16,10 +24,39 @@ var height = window.innerHeight
 var svg = d3.select('svg')
 	.attr('width', width).attr('height', height)
 
+var linkForce = d3
+	.forceLink()
+	.id(function(link) {return link.id})
+	.strength(function(link) {return link.strength})
+
 var simulation = d3
   .forceSimulation()
+  .force('link', linkForce)
   .force('charge', d3.forceManyBody().strength(-120))
-  .force('center', d3.forceCenter(width / 2, height / 2))
+  .force('center', d3.forceCenter(width/2, height/2))
+
+var dragDrop = d3.drag().on('start', function(node) {
+	node.fx = node.x
+	node.fy = node.y
+}).on('drag', function(node) {
+	simulation.alphaTarget(0.7).restart()
+	node.fx = d3.event.x
+	node.fy = d3.event.y
+}).on('end', function(node) {
+	if (!d3.event.active) {
+		simulation.alphaTarget(0)
+	}
+	node.fx = null
+	node.fy = null
+})
+
+var linkElements = svg.append("g")
+  .attr("class", "links")
+  .selectAll("line")
+  .data(links)
+  .enter().append("line")
+  .attr("stroke-width", 1)
+  .attr("stroke", "rgba(50, 50, 50, 0.2)")
 
 var nodeElements = svg.append("g")
   .attr("class", "nodes")
@@ -28,25 +65,32 @@ var nodeElements = svg.append("g")
   .enter().append("circle")
   .attr("r", 10)
   .attr("fill", "#ff8491")
+  .call(dragDrop)
 
 var textElements = svg.append("g")
   .attr("class", "texts")
   .selectAll("text")
   .data(nodes)
   .enter().append("text")
-  .text(function (node) {return node.name})
+  .text(function (node) {return node.id})
   .attr("font-size", 14)
   .attr("font-family", 'arial')
   .attr("dx", 15)
   .attr("dy", 4)
 
-  simulation.nodes(nodes).on('tick', () => {
+simulation.nodes(nodes).on('tick', () => {
     nodeElements
       .attr('cx', function (node) {return node.x})
       .attr('cy', function (node) {return node.y})
     textElements
       .attr('x', function (node) {return node.x})
       .attr('y', function (node) {return node.y})
+    linkElements
+    	.attr('x1', function (link) { return link.source.x })
+    	.attr('y1', function (link) { return link.source.y })
+    	.attr('x2', function (link) { return link.target.x })
+    	.attr('y2', function (link) { return link.target.y })
   })
 
+simulation.force("link").links(links)
 </script>
