@@ -1,1 +1,6 @@
 apollo: the relationship between musical artists
+
+to run:
+	- change to 'apollo' directory
+	- run the command: python -m SimpleHTTPServer 8000
+	- open your browser and go to 'localhost:8000'
