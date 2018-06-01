@@ -11,13 +11,10 @@ $(document).ready(function() {
 	const CLIENT_ID = "e972ffbb56d34a349f458adb2e13abfc";
 	const CLIENT_SECRET = "5463a3bfa76249cdac435089d7295dbe";
 
-	var baseNodes = [
-	{id: 'Post Malone', spot_id: "246dkjvS1zLTtiykXe5h60"}
+	var nodes = [
+		{id: 'Post Malone', spot_id: "246dkjvS1zLTtiykXe5h60"}
 	]
-	var baseLinks = [
-	]
-	var nodes = [...baseNodes]
-	var links = [...baseLinks]
+	var links = []
 
 	var width = window.innerWidth
 	var height = window.innerHeight
@@ -113,7 +110,7 @@ $(document).ready(function() {
 	}
 	updateSimulation();
 
-	$(".node").click(function() {
+	$(document).on('click', '.node', function() {
 		var id = $(this).attr('id');
 		var name = $(this).attr('class').substr($(this).attr('class').indexOf(" ")+1);
 		fetch(`https://api.spotify.com/v1/artists/${id}/related-artists`, {
@@ -127,9 +124,15 @@ $(document).ready(function() {
 		.then(json => {
 			const names = json.artists.map(d => d.name);
 			const ids = json.artists.map(d => d.id);
-			for (let i = 0; i < 4; i++) {
+			for (let i = 0; i < names.length; i++) {
 				const obj = Object.assign({}, {id: names[i], spot_id: ids[i]});
-				if(nodes.includes(obj)) {
+				var flag = false;
+				for (let i = 0; i < nodes.length; i++) {
+					if (obj.id == nodes[i].id) {
+						flag = true;
+					}
+				}
+				if (flag) {
 					continue;
 				}
 				const link = Object.assign({}, {source: name, target: obj.id, strength: 0.05});
