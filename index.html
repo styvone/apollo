@@ -1,96 +1,143 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <svg width="960" height="600"></svg>
+<script
+src="http://code.jquery.com/jquery-3.3.1.js"
+integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+crossorigin="anonymous"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
-var nodes = [
-  {id: 'Post Malone'},
-  {id: 'Rich Brian'},
-  {id: 'BROCKHAMPTON'},
-  {id: 'Joji'},
-  {id: 'Kendrick Lamar'},
-]
+$(document).ready(function() {
+	const CLIENT_ID = "e972ffbb56d34a349f458adb2e13abfc";
+	const CLIENT_SECRET = "94fe9ff393ab49a79916c0326e5dc851";
 
-var links = [
-	{target: "Post Malone", source: "Rich Brian", strength: 0.2},
-	{target: "Rich Brian", source: "BROCKHAMPTON", strength: 0.01},
-	{target: "BROCKHAMPTON", source: "Joji", strength: 0.01},
-	{target: "Joji", source: "Kendrick Lamar", strength: 0.07},
-	{target: "Kendrick Lamar", source: "Post Malone", strength: 0.07}
-]
+	var baseNodes = [
+	{id: 'Post Malone', spot_id: "246dkjvS1zLTtiykXe5h60"}
+	]
+	var baseLinks = [
+	]
+	var nodes = [...baseNodes]
+	var links = [...baseLinks]
 
-var width = window.innerWidth
-var height = window.innerHeight
-var svg = d3.select('svg')
+	var width = window.innerWidth
+	var height = window.innerHeight
+
+	var svg = d3.select('svg')
 	.attr('width', width).attr('height', height)
 
-var linkForce = d3
+	var linkElements, nodeElements, textElements
+	var linkGroup = svg.append('g').attr('class', 'links')
+	var nodeGroup = svg.append('g').attr('class', 'nodes')
+	var textGroup = svg.append('g').attr('class', 'texts')
+
+	var linkForce = d3
 	.forceLink()
 	.id(function(link) {return link.id})
 	.strength(function(link) {return link.strength})
 
-var simulation = d3
-  .forceSimulation()
-  .force('link', linkForce)
-  .force('charge', d3.forceManyBody().strength(-120))
-  .force('center', d3.forceCenter(width/2, height/2))
+	var simulation = d3
+	.forceSimulation()
+	.force('link', linkForce)
+	.force('charge', d3.forceManyBody().strength(-120))
+	.force('center', d3.forceCenter(width/2, height/2))
 
-var dragDrop = d3.drag().on('start', function(node) {
-	node.fx = node.x
-	node.fy = node.y
-}).on('drag', function(node) {
-	simulation.alphaTarget(0.7).restart()
-	node.fx = d3.event.x
-	node.fy = d3.event.y
-}).on('end', function(node) {
-	if (!d3.event.active) {
-		simulation.alphaTarget(0)
+	var dragDrop = d3.drag().on('start', function(node) {
+		node.fx = node.x
+		node.fy = node.y
+	}).on('drag', function(node) {
+		simulation.alphaTarget(0.7).restart()
+		node.fx = d3.event.x
+		node.fy = d3.event.y
+	}).on('end', function(node) {
+		if (!d3.event.active) {
+			simulation.alphaTarget(0)
+		}
+		node.fx = null
+		node.fy = null
+	})
+
+	function updateGraph() {
+		linkElements = linkGroup.selectAll('line')
+		.data(links, function (link) {
+			return link.target.id+link.source.id
+		})
+		linkElements.exit().remove()
+		var linkEnter = linkElements
+		.enter().append('line')
+		.attr('stroke-width', 1)
+		.attr('stroke', 'rgba(50, 50, 50, 0.2)')
+		linkElements = linkEnter.merge(linkElements)
+
+		nodeElements = nodeGroup.selectAll('circle')
+		.data(nodes, function (node) {return node.id})
+		nodeElements.exit().remove()
+		var nodeEnter = nodeElements
+		.enter().append('circle')
+		.attr("r", 10)
+		.attr("fill", "#ff8491")
+		.attr("class", d => "node " + d.id)
+		.attr("id", d => d.spot_id)
+		.call(dragDrop)
+		nodeElements = nodeEnter.merge(nodeElements)
+
+		textElements = textGroup.selectAll('text')
+		.data(nodes, function (node) {return node.id})
+		textElements.exit().remove()
+		var textEnter = textElements
+		.enter().append('text')
+		.text(function (node) {return node.id})
+		.attr('font-size', 14)
+		.attr("font-family", 'arial')
+		.attr('dx', 15)
+		.attr('dy', 4)
+		textElements = textEnter.merge(textElements)
 	}
-	node.fx = null
-	node.fy = null
-})
 
-var linkElements = svg.append("g")
-  .attr("class", "links")
-  .selectAll("line")
-  .data(links)
-  .enter().append("line")
-  .attr("stroke-width", 1)
-  .attr("stroke", "rgba(50, 50, 50, 0.2)")
+	function updateSimulation() {
+		updateGraph()
+		simulation.nodes(nodes).on('tick', () => {
+			nodeElements
+			.attr('cx', function (node) {return node.x})
+			.attr('cy', function (node) {return node.y})
+			textElements
+			.attr('x', function (node) {return node.x})
+			.attr('y', function (node) {return node.y})
+			linkElements
+			.attr('x1', function (link) {return link.source.x})
+			.attr('y1', function (link) {return link.source.y})
+			.attr('x2', function (link) {return link.target.x})
+			.attr('y2', function (link) {return link.target.y})
+		})
+		simulation.force("link").links(links)
+		simulation.alphaTarget(0.7).restart()
+	}
+	updateSimulation();
 
-var nodeElements = svg.append("g")
-  .attr("class", "nodes")
-  .selectAll("circle")
-  .data(nodes)
-  .enter().append("circle")
-  .attr("r", 10)
-  .attr("fill", "#ff8491")
-  .call(dragDrop)
-
-var textElements = svg.append("g")
-  .attr("class", "texts")
-  .selectAll("text")
-  .data(nodes)
-  .enter().append("text")
-  .text(function (node) {return node.id})
-  .attr("font-size", 14)
-  .attr("font-family", 'arial')
-  .attr("dx", 15)
-  .attr("dy", 4)
-
-simulation.nodes(nodes).on('tick', () => {
-    nodeElements
-      .attr('cx', function (node) {return node.x})
-      .attr('cy', function (node) {return node.y})
-    textElements
-      .attr('x', function (node) {return node.x})
-      .attr('y', function (node) {return node.y})
-    linkElements
-    	.attr('x1', function (link) { return link.source.x })
-    	.attr('y1', function (link) { return link.source.y })
-    	.attr('x2', function (link) { return link.target.x })
-    	.attr('y2', function (link) { return link.target.y })
-  })
-
-simulation.force("link").links(links)
+	$(".node").click(function() {
+		var id = $(this).attr('id');
+		var name = $(this).attr('class').substr($(this).attr('class').indexOf(" ")+1);
+		fetch(`https://api.spotify.com/v1/artists/${id}/related-artists`, {
+			method: "GET",
+			body: {
+				"client_id": CLIENT_ID,
+				"client_secret": CLIENT_SECRET,
+			}
+		})
+		.then(response => response.json())
+		.then(json => {
+			const names = json.artists.map(d => d.name);
+			const ids = json.artists.map(d => d.id);
+			for (let i = 0; i < 4; i++) {
+				const obj = Object.assign({}, {id: names[i], spot_id: ids[i]});
+				if(nodes.includes(obj)) {
+					continue;
+				}
+				const link = Object.assign({}, {source: name, target: obj.id, strength: 0.05});
+				links.push(link);
+				nodes.push(obj);
+			}
+			updateSimulation();
+		});
+	});
+});
 </script>
