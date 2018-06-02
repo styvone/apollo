@@ -10,7 +10,7 @@
 	display: flex;
 	justify-content: center; 
 	align-items: center; 
-	flex-direction: column
+	flex-direction: column;
 }
 
 #mountPoint {
@@ -27,4 +27,8 @@
 li:hover {
 	background-color: #ff8491;
 	cursor: pointer;
+}
+
+#resetButtonDiv {
+	
 }

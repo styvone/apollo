@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link rel="stylesheet" href="style.css">
-<svg width="960" height="600"></svg>
+<svg width="960" height="600">
+
+</svg>
 <div id="searchBarDiv">
 	<input id="searchBar" type="input" placeholder="Enter an artist's name...">
 	</input>
 	<div id="mountPoint"></div>
 </div>
+<div id="resetButtonDiv"></div>
 <script
 src="http://code.jquery.com/jquery-3.3.1.js"
 integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -14,6 +17,7 @@ crossorigin="anonymous"></script>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
 $(document).ready(function() {
+
 	var mountPoint = document.getElementById("mountPoint");
 	let searchName;
 
@@ -51,6 +55,15 @@ $(document).ready(function() {
 					const obj = Object.assign({}, {id: json.artists.items[0].name, spot_id: json.artists.items[0].id});
 					nodes.push(obj);
 					$("#searchBarDiv").remove();
+					var resetButtonDiv = document.getElementById("resetButtonDiv");
+					var resetButton = document.createElement("button");
+					resetButton.setAttribute("type", "button");
+					resetButton.setAttribute("id", "resetButton");
+					resetButton.innerHTML = "Reset";
+					resetButton.addEventListener("click", function() {
+						location.reload();
+					});
+					resetButtonDiv.appendChild(resetButton);
 					updateSimulation();
 				}
 			});
