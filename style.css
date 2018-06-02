@@ -1,0 +1,30 @@
+#searchBarDiv {
+	width: 100vw; 
+	height: 100vh; 
+	position: fixed; 
+	background-color: white; 
+	top: 0; 
+	left: 0; 
+	right: 0; 
+	left: 0; 
+	display: flex;
+	justify-content: center; 
+	align-items: center; 
+	flex-direction: column
+}
+
+#mountPoint {
+	width: 8em; 
+	height: 6em
+}
+
+.dropElement {
+	list-style-type: none; 
+	font-family: arial;
+	font-size: 14;
+}
+
+li:hover {
+	background-color: #ff8491;
+	cursor: pointer;
+}
