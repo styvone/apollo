@@ -3,4 +3,6 @@ apollo: the relationship between musical artists
 to run:
 	- change to 'apollo' directory
 	- run the command: python -m SimpleHTTPServer 8000
-	- open your browser and go to 'localhost:8000'
+	- open your favortie web browser and go to 'localhost:8000'
+
+project made with d3.js, the spotify web API, and a lot of love
