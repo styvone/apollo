@@ -2,14 +2,14 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="style.css">
 <svg width="960" height="600">
-
+	<foreignobject>
+		<div id="resetButtonDiv"></div>
+	</foreignobject>
 </svg>
 <div id="searchBarDiv">
-	<input id="searchBar" type="input" placeholder="Enter an artist's name...">
-	</input>
+	<input id="searchBar" type="input" placeholder="Enter an artist's name..."></input>
 	<div id="mountPoint"></div>
 </div>
-<div id="resetButtonDiv"></div>
 <script
 src="http://code.jquery.com/jquery-3.3.1.js"
 integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
@@ -28,11 +28,40 @@ $(document).ready(function() {
 		return baseURL;
 	}
 
+	async function enterRequest(name) {
+		fetch(buildURL(name), {
+			method: "GET",
+			headers: {
+				'Authorization': 'Bearer ' + access_token
+			}
+		})
+		.then(response => response.json())
+		.then(json => {
+			if (json.artists.items === undefined || json.artists.items.length === 0) {
+				alert("Error: artist not found!");
+			}
+			else {
+				const obj = Object.assign({}, {id: json.artists.items[0].name, spot_id: json.artists.items[0].id});
+				nodes.push(obj);
+				$("#searchBarDiv").remove();
+				var resetButtonDiv = document.getElementById("resetButtonDiv");
+				var resetButton = document.createElement("button");
+				resetButton.setAttribute("type", "button");
+				resetButton.setAttribute("id", "resetButton");
+				resetButton.innerHTML = "Reset";
+				resetButton.addEventListener("click", function() {
+					location.reload();
+				});
+				resetButtonDiv.appendChild(resetButton);
+				updateSimulation();
+			}
+		});
+	}
+
 	async function chooseArtist(artist) {
-		var name = artist.getAttribute("data-name");
-		document.getElementById("searchBar").value = name;
-		searchName = name;
+		searchName = artist.getAttribute("data-name");
 		mountPoint.innerHTML = "";
+		enterRequest(searchName);
 	}
 
 	$("#searchBar").keyup(function(e) {
@@ -40,33 +69,7 @@ $(document).ready(function() {
 		searchName = searchInput.value;
 		if (e.which === 13) {
 			mountPoint.innerHTML = "";
-			fetch(buildURL(searchName), {
-				method: "GET",
-				headers: {
-					'Authorization': 'Bearer ' + access_token
-				}
-			})
-			.then(response => response.json())
-			.then(json => {
-				if (json.artists.items === undefined || json.artists.items.length === 0) {
-					alert("Error: artist not found!");
-				}
-				else {
-					const obj = Object.assign({}, {id: json.artists.items[0].name, spot_id: json.artists.items[0].id});
-					nodes.push(obj);
-					$("#searchBarDiv").remove();
-					var resetButtonDiv = document.getElementById("resetButtonDiv");
-					var resetButton = document.createElement("button");
-					resetButton.setAttribute("type", "button");
-					resetButton.setAttribute("id", "resetButton");
-					resetButton.innerHTML = "Reset";
-					resetButton.addEventListener("click", function() {
-						location.reload();
-					});
-					resetButtonDiv.appendChild(resetButton);
-					updateSimulation();
-				}
-			});
+			enterRequest(searchName);
 		}
 		else {
 			if (searchName.length > 0) {
@@ -232,7 +235,7 @@ $(document).on('click', '.node', function() {
 		.then(json => {
 			const names = json.artists.map(d => d.name);
 			const ids = json.artists.map(d => d.id);
-			for (let i = 0; i < names.length; i++) {
+			for (let i = 0; i < 5; i++) {
 				const obj = Object.assign({}, {id: names[i], spot_id: ids[i]});
 				var flag = false;
 				for (let i = 0; i < nodes.length; i++) {
