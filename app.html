@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link rel="stylesheet" href="style.css">
-<svg width="960" height="600">
+<svg>
 	<foreignobject>
 		<div id="resetButtonDiv"></div>
 	</foreignobject>
@@ -128,7 +128,8 @@ var width = window.innerWidth
 var height = window.innerHeight
 
 var svg = d3.select('svg')
-.attr('width', width).attr('height', height)
+.attr('width', width)
+.attr('height', height)
 
 var linkElements, nodeElements, textElements
 var linkGroup = svg.append('g').attr('class', 'links')
@@ -147,19 +148,26 @@ var simulation = d3
 .force('center', d3.forceCenter(width/2, height/2))
 
 var dragDrop = d3.drag().on('start', function(node) {
+	if (!d3.event.active) simulation.alphaTarget(0.3).restart();
 	node.fx = node.x
 	node.fy = node.y
 }).on('drag', function(node) {
-	simulation.alphaTarget(0.7).restart()
 	node.fx = d3.event.x
 	node.fy = d3.event.y
 }).on('end', function(node) {
 	if (!d3.event.active) {
-		simulation.alphaTarget(0)
+		simulation.alphaTarget(0);
 	}
 	node.fx = null
 	node.fy = null
 })
+
+var zoom_handler = d3.zoom().on("zoom", function() {
+	linkGroup.attr("transform", d3.event.transform);
+	nodeGroup.attr("transform", d3.event.transform);
+	textGroup.attr("transform", d3.event.transform);
+});
+zoom_handler(svg);
 
 function updateGraph() {
 	linkElements = linkGroup.selectAll('line')
@@ -235,7 +243,7 @@ $(document).on('click', '.node', function() {
 		.then(json => {
 			const names = json.artists.map(d => d.name);
 			const ids = json.artists.map(d => d.id);
-			for (let i = 0; i < 5; i++) {
+			for (let i = 0; i < names.length; i++) {
 				const obj = Object.assign({}, {id: names[i], spot_id: ids[i]});
 				var flag = false;
 				for (let i = 0; i < nodes.length; i++) {
