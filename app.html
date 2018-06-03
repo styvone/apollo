@@ -243,11 +243,25 @@ $(document).on('click', '.node', function() {
 		.then(json => {
 			const names = json.artists.map(d => d.name);
 			const ids = json.artists.map(d => d.id);
-			for (let i = 0; i < names.length; i++) {
+			for (let i = 0; i < 4; i++) {
 				const obj = Object.assign({}, {id: names[i], spot_id: ids[i]});
 				var flag = false;
 				for (let i = 0; i < nodes.length; i++) {
-					if (obj.id == nodes[i].id) {
+					if (obj.id === nodes[i].id) {
+						const newLink = Object.assign({}, {source: name, target: obj.id, strength: 0.05});
+						const reverseLink = Object.assign({}, {source: obj.id, target: name, strength: 0.05});
+						var exists = false;
+						for (let i = 0; i < links.length; i++) {
+							if ((links[i].source.id === newLink.source) && (links[i].target.id === newLink.target)) {
+								exists = true;
+							}
+							if ((links[i].source.id === reverseLink.source) && (links[i].target.id === reverseLink.target)) {
+								exists = true;
+							}
+						}
+						if (!exists) {
+							links.push(newLink);
+						}
 						flag = true;
 					}
 				}
