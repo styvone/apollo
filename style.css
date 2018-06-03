@@ -1,3 +1,4 @@
+/* app.html styling */
 #searchBarDiv {
 	width: 100vw; 
 	height: 100vh; 
@@ -31,4 +32,53 @@ li:hover {
 
 #resetButtonDiv {
 	
+}
+
+/* index.html styling */
+@font-face {
+    font-family: 'MuseoSans_500';
+    src: url('fonts/MuseoSans_500-webfont.woff2') format('woff2'),
+         url('fonts/MuseoSans_500-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#login-button {
+	height: 7%;
+	width: 20%;
+	font-family: 'MuseoSans_500', arial;
+	font-size: 1.75em;
+	background-color: rgba(50, 50, 50, 0.025);
+	border-radius: 12px;
+	margin-top: 3em;
+}
+
+#login-button:hover {
+	cursor: pointer;
+	background-color: #ff8491;
+}
+
+#titleDiv {
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	background-color: white;
+	top: 0;
+	left: 0;
+	right: 0;
+	left: 0;
+	display: flex;
+	justify-content: center; 
+	align-items: center;
+	flex-direction: column;
+}
+
+.text {
+	font-size: 2em;
+	font-family: 'MuseoSans_500', arial;
+}
+
+#apollo {
+	font-size: 5em;
+	margin-bottom: 0;
 }
