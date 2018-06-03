@@ -1,0 +1,135 @@
+/* app.html styling */
+#searchBarDiv {
+	width: 100vw; 
+	height: 100vh; 
+	position: fixed; 
+	background-color: white; 
+	top: 0; 
+	left: 0; 
+	right: 0; 
+	left: 0;
+	display: flex;
+	justify-content: center; 
+	align-items: center; 
+	flex-direction: column;
+}
+
+#searchBar {
+	width: 30vw;
+	height: 5vh;
+	border: solid;
+	border-width: 0.35vh;
+	font-size: 5vh;
+	font-family: 'MuseoSans_500', arial;
+}
+
+#searchBar:focus {
+	outline: 0;
+}
+
+#searchBar:focus::-webkit-input-placeholder {
+  opacity: 0;
+}
+
+#mountPoint {
+	width: 30vw;
+	height: 10vh;
+	border: solid;
+	border-color: white;
+}
+
+.dropElement {
+	list-style-type: none; 
+	font-family: 'MuseoSans_500', arial;
+	font-size: 5vh;
+}
+
+li {
+	border: solid;
+	border-width: thin;
+	border-bottom: none;
+}
+
+li:last-child {
+	border: solid;
+	border-width: thin;
+}
+
+li:hover {
+	background-color: #ff8491;
+	cursor: pointer;
+}
+
+#resetButton {
+	width: 8vw;
+	height: 5vh;
+	border-radius: 12px;
+	font-family: 'MuseoSans_500', arial;
+	font-size: 4vh;
+	border: solid;
+	border-width: 0.35vh;
+}
+
+#resetButton:hover {
+	cursor: pointer;
+	background-color: #ff8491;
+}
+
+#resetButton:focus {
+	outline: 0;
+}
+
+/* index.html styling */
+@font-face {
+    font-family: 'MuseoSans_500';
+    src: url('../fonts/MuseoSans_500-webfont.woff2') format('woff2'),
+         url('../fonts/MuseoSans_500-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#login-button {
+	height: 7vh;
+	width: 20vw;
+	font-family: 'MuseoSans_500', arial;
+	font-size: 4vh;
+	font-weight: bold;
+	background-color: rgba(50, 50, 50, 0.025);
+	border-radius: 12px;
+	margin-top: 7vh;
+	border: solid;
+}
+
+#login-button:focus {
+	outline: 0;
+}
+
+#login-button:hover {
+	cursor: pointer;
+	background-color: #ff8491;
+}
+
+#titleDiv {
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	background-color: white;
+	top: 0;
+	left: 0;
+	right: 0;
+	left: 0;
+	display: flex;
+	justify-content: center; 
+	align-items: center;
+	flex-direction: column;
+}
+
+.text {
+	font-size: 2.5vw;
+	font-family: 'MuseoSans_500', arial;
+}
+
+#apollo {
+	font-size: 6vw;
+	margin-bottom: 0;
+}
