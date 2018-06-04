@@ -232,6 +232,7 @@ function updateSimulation() {
 updateSimulation();
 
 $(document).on('click', '.node', function() {
+	$(this).attr('fill', '#1FBED6');
 	var id = $(this).attr('id');
 	var name = $(this).attr('class').substr($(this).attr('class').indexOf(" ")+1);
 		fetch(`https://api.spotify.com/v1/artists/${id}/related-artists`, {
