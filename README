@@ -1,9 +1,5 @@
 apollo: the relationship between musical artists
 
-to run:
-	- change to 'apollo' directory
-	- run the command: python -m SimpleHTTPServer 8000
-	- open your favortie web browser and go to 'localhost:8000'
-
+live demo: https://apollo-d3.herokuapp.com/
 
 made with d3.js, the spotify web API, and lots and lots of love
