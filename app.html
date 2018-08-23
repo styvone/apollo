@@ -232,7 +232,6 @@ $(document).on('click', '.node', function() {
 	var name = $(this).attr('class').substr($(this).attr('class').indexOf(" ")+1);
 		fetch(`https://api.spotify.com/v1/artists/${id}/related-artists`, {
 			method: "GET",
-			
 			headers: {
 				'Authorization': 'Bearer ' + access_token
 			}
